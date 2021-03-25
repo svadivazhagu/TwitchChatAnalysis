@@ -24,18 +24,18 @@ chat['datetime'] = pd.to_datetime(chat[['date','timestamp']].astype(str).apply('
 
 print(chat.head())
 
-distribution = chat['datetime'].value_counts(sort=False, bins=24)
+distribution = chat['datetime'].value_counts(sort=False, bins=192)
 
-#norm_dist = (distribution - distribution.mean()) / distribution.std()
+norm_dist = distribution / distribution.mean()
 
 
-plot = distribution.plot(kind='bar',rot=90)
+#plot = distribution.plot(kind='line',rot=90, grid=True)
 
-#plot.xaxis.set_major_formatter(mdates.DateFormatter("%h:%m"))
-#plot.xaxis.set_major_formatter(mdates.DateFormatter("%I:%M"))
+#plot.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+#plot.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
 
 
 
 plt.tight_layout()
-plt.figure(dpi=1200)
+plt.figure(dpi=2400)
 plt.show()
