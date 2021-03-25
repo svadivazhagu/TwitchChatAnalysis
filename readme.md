@@ -12,3 +12,4 @@ in a popular stream, if something 'stupid' happens -- chat tends to fill with a 
 - can we measure the quality of a stream by the engagements from chat? think of a "quality of streamer content"
 - emote analysis. 
   - Use BS4 to scrape [bttv.com](https://betterttv.com/emotes/top) and identify popular emotes, or just extract it from the chat.
+    - beyond this, identify sentiment associated with emotes. positive (KomodoHype, PogU, PagMan) and negative (FeelsBadMan, OMEGALUL)
