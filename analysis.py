@@ -1,6 +1,7 @@
-import pandas as pd, re, matplotlib, numpy as np
+import pandas as pd, re, numpy as np
 from datetime import datetime
-from tqdm import tqdm
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 chat = pd.read_csv("chat.csv")
 #converted_timestamps = []
@@ -18,6 +19,23 @@ chat['timestamp'] = chat['timestamp'] + am_pm
 chat['datetime'] = pd.to_datetime(chat[['date','timestamp']].astype(str).apply(' '.join, 1),
                                   format='%m/%d/%y %I:%M%p')
 
-distribution = chat['datetime'].value_counts()
+#
 
-print(1)
+
+print(chat.head())
+
+distribution = chat['datetime'].value_counts(sort=False, bins=24)
+
+#norm_dist = (distribution - distribution.mean()) / distribution.std()
+
+
+plot = distribution.plot(kind='bar',rot=90)
+
+#plot.xaxis.set_major_formatter(mdates.DateFormatter("%h:%m"))
+#plot.xaxis.set_major_formatter(mdates.DateFormatter("%I:%M"))
+
+
+
+plt.tight_layout()
+plt.figure(dpi=1200)
+plt.show()
