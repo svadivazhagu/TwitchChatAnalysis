@@ -13,3 +13,7 @@ in a popular stream, if something 'stupid' happens -- chat tends to fill with a 
 - emote analysis. 
   - Use BS4 to scrape [bttv.com](https://betterttv.com/emotes/top) and identify popular emotes, or just extract it from the chat.
     - beyond this, identify sentiment associated with emotes. positive (KomodoHype, PogU, PagMan) and negative (FeelsBadMan, OMEGALUL)
+
+
+## resources
+[Emote-Controlled: Obtaining Implicit Viewer Feedback Through Emote-Based Sentiment Analysis on Comments of Popular Twitch.tv Channels](https://dl.acm.org/doi/abs/10.1145/3365523)
