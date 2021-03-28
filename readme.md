@@ -5,9 +5,7 @@ if a a chat has a high similarity in Emotes and is experiencing higher frequency
 there is something 'exciting' happening on stream.
 
 ## ideation
-in a popular stream, if something **engaging** happens -- chat tends to fill with a particular set of emotes/messages, in a rapid time. 
-**example**:
-<br>
+in a popular stream, if something **engaging** happens -- chat tends to fill with a particular set of emotes/messages, in a rapid time.
 <img src="https://i.redd.it/52xqyo1i37k01.png" alt="Twitch chat when streamer Forsen has made a big mistake.">
 
 
