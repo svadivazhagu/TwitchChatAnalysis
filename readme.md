@@ -5,7 +5,7 @@ if a a chat has a high similarity in Emotes and is experiencing higher frequency
 there is something 'exciting' happening on stream.
 
 ## ideation
-in a popular stream, if something 'stupid' happens -- chat tends to fill with a particular set of emotes/messages, in a rapid time. same thing occurs if something 'exciting' happens.
+in a popular stream, if something **engaging** happens -- chat tends to fill with a particular set of emotes/messages, in a rapid time. 
 
 ## todo
 - create a better measure of chatter engagement
