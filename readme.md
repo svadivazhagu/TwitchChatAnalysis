@@ -15,6 +15,7 @@ in a popular stream, if something **engaging** happens -- chat tends to fill wit
 - identify most popular emotes for a given timestamp
   - because of *user spam* (spamming multiple emotes per message, can lead to inflation of sentiment)
   - to overcome this, associate an Emote-using chatter with one emote per message, and rank most popular emotes per time stamp to identify the most popular emote per X time unit.
+    - also, check if that emote's usage *spiked* during a particular moment in comparison to its closest timestamp.
 
 
 ## potential use cases
