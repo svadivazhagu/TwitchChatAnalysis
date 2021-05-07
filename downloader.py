@@ -2,20 +2,22 @@ import json
 import re
 import sys
 from datetime import timedelta
+import argparse
 import requests
 import pandas as pd
 import twitch
 import os
 from pathlib import Path
+import time
+import yaml
 
 SAME = 1008313700
 DIFF = 1006516490
 
-
-def get_vod(vod_id: int):
+def get_vod(vod: int):
     """
     Given a twitch Vod ID, return that video object and throw error if given an incorrect Vod iD
-    :param vod_id: Twitch video ID - Int
+    :param vod: Twitch video ID - Int
     :return: video: Twitch Helix API video object - twitch.helix.Video
     """
     twitch_id = os.environ['twitch_id']
@@ -24,13 +26,13 @@ def get_vod(vod_id: int):
     helix = twitch.Helix(client_id=twitch_id,
                          client_secret=twitch_secret,
                          use_cache=True,
-                         cache_duration=timedelta(minutes=10))
+                         cache_duration=timedelta(minutes=30))
 
     # check if the video exists and is legitimate based on id
     try:
-        video = helix.video(video_id=vod_id)
+        video = helix.video(video_id=vod)
     except requests.exceptions.HTTPError:
-        sys.exit('Requested VoD not found.')
+        sys.exit('Invalid VoD ID entered.')
 
     choice = input((f"Is '{video.title}' by {video.user_name} of duration {video.duration} created on {video.created_at} your requested VoD? (y/n)"))
     if choice.lower() == "y":
@@ -81,16 +83,13 @@ def get_vod_metadata(video: twitch.helix.Video):
     for i, game in enumerate(gql_json_response['data']['video']['moments']['edges']):
         game_name = game['node']['details']['game']['displayName']
         time_started = game['node']['positionMilliseconds']
-
         games_played.append({'game_name': game_name, 'time_started': time_started})
-
-    return {'created_at': created_at, 'streamer': streamer, 'duration': duration, 'video_id': video_id,
+    return {'video_metadata': video.data,
             'games_played': games_played}
 
 
 def parse_chatlog(chatlog):
     """
-
     :param chatlog:
     :return: Pandas dataframe containing cleaned data corresponding to the inputted chatlog with columns:
         1. User - Twitch Display name of user of message (str)
@@ -98,6 +97,7 @@ def parse_chatlog(chatlog):
         3. Message - Text data of message (str)
     """
     chat = []
+    start = time.time()
     for comment in chatlog:
         '''Need to clean parts of the chat:
             - prevent bots' messages from showing
@@ -113,20 +113,29 @@ def parse_chatlog(chatlog):
         print(f"{user}", f"{msg}")
 
     chat_df = pd.DataFrame(columns=['user', 'timestamp', 'message'], data=chat)
+    end = time.time()
+    print("----------------------------------\nChat data parsed in {:.2f} seconds\n----------------------------------".format(end-start))
     return chat_df
 
 
 def save_chatlog(metadata, df_chatlog: pd.DataFrame):
     #create new folder within current directory called chatlog if doesn't exist
     Path(r"chatlogs/").mkdir(parents=True, exist_ok=True)
-    #create subfolder with the name of the chatlog file
-    Path(f"chatlogs/{metadata['streamer']}/").mkdir(parents=True, exist_ok=True)
+    #create subfolder with the name of the streamer
+    Path(rf"chatlogs/{metadata['video_metadata']['user_name']}/").mkdir(parents=True, exist_ok=True)
+    #create subfolder with the name of the vod date, to store metadata and chatlog
+    Path(rf"chatlogs/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/").mkdir(parents=True, exist_ok=True)
     #save the dataframe within the subfolder
-    filepath = f"chatlogs/{metadata['streamer']}/{metadata['created_at'][:-4]}"
-    df_chatlog.to_csv(f"chatlogs/{metadata['streamer']}/{metadata['created_at'][:10]}.csv", header=True, index=False)
+    filepath = Path(f"chatlogs/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/{metadata['video_metadata']['created_at'][:10]}.yaml")
+    df_chatlog.to_csv(f"chatlogs/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/{metadata['video_metadata']['created_at'][:10]}.csv", header=True, index=False)
+    with open(filepath, 'w') as file:
+        yaml.dump(metadata, file)
 
 if __name__ == '__main__':
-    vod = get_vod('1006728507')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--vod", help="Twitch VoD ID.", type=int)
+    args = parser.parse_args()
+    vod = get_vod(args.vod)
     metadata = get_vod_metadata(vod)
     chat_df = parse_chatlog(vod.comments)
     save_chatlog(metadata, chat_df)
