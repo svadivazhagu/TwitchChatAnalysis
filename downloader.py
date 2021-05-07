@@ -11,9 +11,6 @@ from pathlib import Path
 import time
 import yaml
 
-SAME = 1008313700
-DIFF = 1006516490
-
 def get_vod(vod: int):
     """
     Given a twitch Vod ID, return that video object and throw error if given an incorrect Vod iD
