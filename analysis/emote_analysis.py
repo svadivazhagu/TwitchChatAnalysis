@@ -25,7 +25,7 @@ def emote_sentiment_input(chat_file):
 
         emote_sent_grouped.append([emote_name, emote_popularity, emote_sentiment])
 
-chat = pd.read_csv(r'C:\Users\SV\PycharmProjects\TwitchChatAnalysis\data\chat_with_datetime.csv')
+chat = pd.read_csv(r'/data/chat_with_datetime.csv')
 
 omegaluls = []
 for msg in chat.iterrows():
