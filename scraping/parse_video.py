@@ -36,12 +36,14 @@ def parse_chatlog(chatlog):
     for comment in chatlog:
         '''Need to clean parts of the chat:
             - prevent bots' messages from showing
-            - prevent stream commands from showing (!.*)'''
-        if re.match(".*bot", comment.commenter.name) or re.match("!.*", comment.message.body):
+            - prevent stream commands from showing (!.*)
+            - prevent subscription notifications from coming up '''
+
+        if re.match(".*bot", comment.commenter.name) or re.match("!.*", comment.message.body) or re.match("They've subscribed for \d+ months!", comment.message.body):
             continue
 
         user = comment.commenter.display_name
-        msg = comment.message.body
+        msg = comment.message.body.split(' ')
         timestamp = comment.created_at
 
         chat.append([user, timestamp, msg])
@@ -55,13 +57,14 @@ def parse_chatlog(chatlog):
 
 def save_chatlog(metadata, df_chatlog: pd.DataFrame):
     #create new folder within current directory called chatlog if doesn't exist
-    Path(r"chatlogs/").mkdir(parents=True, exist_ok=True)
+    Path(r"downloads/").mkdir(parents=True, exist_ok=True)
     #create subfolder with the name of the streamer
-    Path(rf"chatlogs/{metadata['video_metadata']['user_name']}/").mkdir(parents=True, exist_ok=True)
+    Path(rf"downloads/{metadata['video_metadata']['user_name']}/").mkdir(parents=True, exist_ok=True)
     #create subfolder with the name of the vod date, to store metadata and chatlog
-    Path(rf"chatlogs/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/").mkdir(parents=True, exist_ok=True)
+    Path(rf"downloads/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/").mkdir(parents=True, exist_ok=True)
     #save the dataframe within the subfolder
-    filepath = Path(f"chatlogs/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/{metadata['video_metadata']['created_at'][:10]}.yaml")
-    df_chatlog.to_csv(f"chatlogs/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/{metadata['video_metadata']['created_at'][:10]}.csv", header=True, index=False)
+    filepath = Path(f"downloads/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/{metadata['video_metadata']['created_at'][:10]}.yaml")
+    df_chatlog.to_csv(f"downloads/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/{metadata['video_metadata']['created_at'][:10]}.csv", header=True, index=False)
     with open(filepath, 'w') as file:
         yaml.dump(metadata, file)
+    return rf"downloads/{metadata['video_metadata']['user_name']}/{metadata['video_metadata']['created_at'][:10]}/"
